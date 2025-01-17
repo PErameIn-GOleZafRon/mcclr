@@ -220,7 +220,7 @@
             for (let i = 0; i < text.length; i++) {
                 const factor = i / Math.max(text.length - 1, 1);
                 const color = rgbToHex(interpolateColor(hexToRgb(startColor), hexToRgb(endColor), factor));
-                output += `${isBold ? '&l' : ''}&#${color.slice(1)}${text[i]}`;
+                output += `&#${color.slice(1)}${isBold ? '&l' : ''}${text[i]};`;
             }
             document.getElementById('output').textContent = output;
         });
