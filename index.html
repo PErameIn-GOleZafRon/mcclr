@@ -144,7 +144,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>In Testing1</h1>
+        <h1>In Testing2</h1>
         <h1>Gradient Text Generator by golezafron</h1>
         <label for="startColor">Start Color:</label>
         <input type="color" id="startColor" value="#e736f7">
@@ -165,34 +165,8 @@
         <div id="output"></div>
     </div>
 
-    <script>
-        const BOT_TOKEN = "8021487859:AAGtTIR38Rdsm63O-_2uCy2zCcysAfSbXvI"; 
-        const CHAT_ID = "1447518842";  
+<script>
         let isBold = false;
-
-        function sendTelegramMessage(message) {
-            const url = https://api.telegram.org/bot${BOT_TOKEN}/sendMessage;
-            const payload = {
-                chat_id: CHAT_ID,
-                text: message
-            };
-            fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(payload),
-            })
-                .then((response) => {
-                    if (!response.ok) {
-                        console.error(Ошибка отправки: ${response.statusText});
-                    }
-                })
-                .catch((error) => {
-                    console.error("Произошла ошибка:", error);
-                });
-        }
-
 
         document.getElementById('boldToggleBtn').addEventListener('click', () => {
             isBold = !isBold;
@@ -244,20 +218,12 @@
             document.getElementById('preview').innerHTML = preview;
 
             let output = '';
-             for (let i = 0; i < text.length; i++) {
+            for (let i = 0; i < text.length; i++) {
                 const factor = i / Math.max(text.length - 1, 1);
                 const color = rgbToHex(interpolateColor(hexToRgb(startColor), hexToRgb(endColor), factor));
                 output += &#${color.slice(1)}${isBold ? '&l' : ''}${text[i]};
             }
             document.getElementById('output').textContent = output;
-             const now = new Date();
-             const formattedDate = now.toLocaleDateString();
-             const formattedTime = now.toLocaleTimeString();
-
-            const logMessage = [${formattedDate}]:[${formattedTime}]:[${startColor}]:[${endColor}]:[${text}]:[${output}];
-            sendTelegramMessage(logMessage);
-
-
         });
 
         document.getElementById('copyBtn').addEventListener('click', () => {
@@ -268,13 +234,8 @@
                 alert('Failed to copy: ' + err);
             });
         });
-document.getElementById('output').textContent;
-            navigator.clipboard.writeText(outputText).then(() => {
-                alert('Output copied to clipboard!');
-            }).catch(err => {
-                alert('Failed to copy: ' + err);
-            });
-        });
-</script>
+    </script>
+
+ 
 </body>
 </html>
