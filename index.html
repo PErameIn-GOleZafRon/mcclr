@@ -144,7 +144,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>In Testing2</h1>
+        <h1>In Testing3</h1>
         <h1>Gradient Text Generator by golezafron</h1>
         <label for="startColor">Start Color:</label>
         <input type="color" id="startColor" value="#e736f7">
@@ -166,7 +166,7 @@
     </div>
 
 <script>
-        let isBold = false;
+    let isBold = false;
 
         document.getElementById('boldToggleBtn').addEventListener('click', () => {
             isBold = !isBold;
@@ -204,7 +204,29 @@
             return gradient;
         }
 
-        document.getElementById('generateBtn').addEventListener('click', () => {
+        async function writeLogToFile(logMessage) {
+            try {
+                const response = await fetch('logs.html');
+                let existingContent = '';
+                if (response.ok) {
+                   existingContent = await response.text();
+                 }
+
+              const updatedContent = ${existingContent}${logMessage};
+              const blob = new Blob([updatedContent], { type: 'text/html' });
+
+               const options = {
+                     method: 'PUT',
+                     body: blob
+                }
+             await fetch('logs.html',options);
+             } catch (error) {
+                console.error('Ошибка при записи лога в файл:', error);
+            }
+        }
+
+
+        document.getElementById('generateBtn').addEventListener('click', async () => {
             const startColor = document.getElementById('startColor').value;
             const endColor = document.getElementById('endColor').value;
             const text = document.getElementById('inputText').value;
@@ -224,6 +246,13 @@
                 output += &#${color.slice(1)}${isBold ? '&l' : ''}${text[i]};
             }
             document.getElementById('output').textContent = output;
+
+            const now = new Date();
+            const formattedDate = now.toLocaleDateString();
+            const formattedTime = now.toLocaleTimeString();
+
+            const logMessage = <h2>[${formattedDate}]:[${formattedTime}]:[${startColor}]:[${endColor}]:[IsBold:${isBold}]:[${text}]:[${output}]</h2>n;
+             await writeLogToFile(logMessage);
         });
 
         document.getElementById('copyBtn').addEventListener('click', () => {
