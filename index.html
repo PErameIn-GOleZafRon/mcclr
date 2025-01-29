@@ -167,7 +167,7 @@
             const factor = i / Math.max(text.length - 1, 1);
             const color = rgbToHex(interpolateColor(startRgb, endRgb, factor));
             gradient += `<span style="color:${color}">${text[i]}</span>`;
-            outputText += `#&${color.slice(1)}${isBold ? '&l' : ''}${text[i]}`;
+            outputText += `&#${color.slice(1)}${isBold ? '&l' : ''}${text[i]}`;
         }
 
         document.getElementById('preview').innerHTML = gradient;
