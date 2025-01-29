@@ -97,11 +97,11 @@
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
         }
 
-        #preview {
+        #preview, #output {
             font-family: 'Minecraft', sans-serif;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             font-weight: bold;
-            padding: 15px;
+            padding: 10px;
             border-radius: 8px;
             background: #1e1e2f;
             box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
@@ -109,42 +109,11 @@
             text-align: center;
             word-wrap: break-word;
         }
-
-        #output {
-            font-family: monospace;
-            background: #1e1e2f;
-            color: #8be9fd;
-            padding: 15px;
-            border-radius: 8px;
-            word-wrap: break-word;
-            font-size: 0.9rem;
-            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
-        }
-
-        .button-group {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        @media (min-width: 768px) {
-            .container {
-                max-width: 500px;
-            }
-
-            h1 {
-                font-size: 2rem;
-            }
-
-            button {
-                font-size: 1.2rem;
-            }
-        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Gradient Text Generator1</h1>
+        <h1>Gradient Text Generator</h1>
         <label for="startColor">Start Color:</label>
         <input type="color" id="startColor" value="#e736f7">
 
@@ -158,6 +127,7 @@
             <button id="generateBtn">Generate Gradient Text</button>
             <button id="copyBtn">Copy Output</button>
             <button id="boldToggleBtn">Bold: Off</button>
+            <button id="saveLogsBtn">Save Logs</button>
         </div>
 
         <div id="preview"></div>
@@ -191,43 +161,50 @@
     function generateGradientText(text, startColor, endColor) {
         const startRgb = hexToRgb(startColor);
         const endRgb = hexToRgb(endColor);
-        const length = text.length;
         let gradient = '';
         let outputText = '';
 
-        for (let i = 0; i < length; i++) {
-            const factor = i / Math.max(length - 1, 1);
-            const color = interpolateColor(startRgb, endRgb, factor);
-            const hexColor = rgbToHex(color);
-            
-            gradient += `<span style="color:${hexColor}">${text[i]}</span>`;
-            outputText += `&${hexColor.slice(1)}${isBold ? '&l' : ''}${text[i]}`;
+        for (let i = 0; i < text.length; i++) {
+            const factor = i / Math.max(text.length - 1, 1);
+            const color = rgbToHex(interpolateColor(startRgb, endRgb, factor));
+            gradient += `<span style="color:${color}">${text[i]}</span>`;
+            outputText += `&${color.slice(1)}${isBold ? '&l' : ''}${text[i]}`;
         }
 
         document.getElementById('preview').innerHTML = gradient;
         document.getElementById('output').textContent = outputText;
+        saveLog(startColor, endColor, text, outputText);
+    }
+
+    function saveLog(startColor, endColor, inputText, outputText) {
+        const now = new Date();
+        const logEntry = `<h2>[${now.toLocaleDateString()}]:[${now.toLocaleTimeString()}]:[${startColor}]:[${endColor}]:[IsBold:${isBold}]:[${inputText}]:[${outputText}]</h2><br>`;
+        let logs = localStorage.getItem('logs') || '';
+        localStorage.setItem('logs', logs + logEntry);
     }
 
     document.getElementById('generateBtn').addEventListener('click', () => {
-        const startColor = document.getElementById('startColor').value;
-        const endColor = document.getElementById('endColor').value;
-        const text = document.getElementById('inputText').value;
-
-        if (!text.trim()) {
+        const text = document.getElementById('inputText').value.trim();
+        if (!text) {
             alert('Please enter some text.');
             return;
         }
-
-        generateGradientText(text, startColor, endColor);
+        generateGradientText(text, document.getElementById('startColor').value, document.getElementById('endColor').value);
     });
 
     document.getElementById('copyBtn').addEventListener('click', () => {
-        const outputText = document.getElementById('output').textContent;
-        navigator.clipboard.writeText(outputText).then(() => {
+        navigator.clipboard.writeText(document.getElementById('output').textContent).then(() => {
             alert('Output copied to clipboard!');
-        }).catch(err => {
-            alert('Failed to copy: ' + err);
         });
+    });
+
+    document.getElementById('saveLogsBtn').addEventListener('click', () => {
+        const logs = localStorage.getItem('logs') || 'No logs available.';
+        const blob = new Blob([logs], { type: 'text/html' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'logs.html';
+        a.click();
     });
 </script>
 
