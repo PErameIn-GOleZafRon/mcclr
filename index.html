@@ -98,11 +98,27 @@
             text-align: center;
             word-wrap: break-word;
         }
+
+        footer {
+            margin-top: 20px;
+            padding: 20px;
+            background: #292942;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            background: #292942;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Gradient Text Generator</h1>
+        <h1>Gradient Text Generator1</h1>
         <label for="startColor">Start Color:</label>
         <input type="color" id="startColor" value="#e736f7">
 
@@ -112,14 +128,40 @@
         <label for="inputText">Enter Text:</label>
         <textarea id="inputText" placeholder="Enter your text here..."></textarea>
 
-        <button id="generateBtn">Generate Gradient Text</button>
-        <button id="copyBtn">Copy Output</button>
+        <div class="button-group">
+            <button id="generateBtn">Generate Gradient Text</button>
+            <button id="copyBtn">Copy Output</button>
+            <button id="boldToggleBtn">Bold: Off</button>
+        </div>
 
         <div id="preview"></div>
         <div id="output"></div>
     </div>
 
+    <footer>
+        <h1 style="color: #ff79c6; font-family: 'Minecraft', sans-serif; margin-bottom: 10px;">Баг-репорт / Идеи</h2>
+
+        <label for="contactInfo" style="color: #8be9fd;">Ваш телеграмм/дискорд для связи:</label>
+        <input type="text" id="contactInfo" placeholder="Например, @username">
+
+        <label for="reportText" style="color: #8be9fd;">Если вы нашли ошибку или есть идеи что можно добавить, то распишите это тут:</label>
+        <textarea id="reportText" placeholder="Опишите проблему или предложение..."></textarea>
+
+        <button id="sendReportBtn" disabled>Отправить</button>
+    </footer>
+
 <script>
+    let isBold = false;
+
+    document.getElementById('boldToggleBtn').addEventListener('click', () => {
+        isBold = !isBold;
+        document.getElementById('boldToggleBtn').textContent = `Bold: ${isBold ? 'On' : 'Off'}`;
+    });
+
+function interpolateColor(start, end, factor) {
+        return start.map((s, i) => Math.round(s + (end[i] - s) * factor));
+    }
+
     function hexToRgb(hex) {
         return [
             parseInt(hex.slice(1, 3), 16),
@@ -129,44 +171,38 @@
     }
 
     function rgbToHex(rgb) {
-        return `#${rgb.map(x => x.toString(16).padStart(2, '0').toUpperCase()).join('')}`;
-    }
-
-    function interpolateColor(start, end, factor) {
-        return start.map((s, i) => Math.round(s + (end[i] - s) * factor));
+        return #${rgb.map(x => x.toString(16).padStart(2, '0').toUpperCase()).join('')};
     }
 
     function generateGradientText(text, startColor, endColor) {
         const startRgb = hexToRgb(startColor);
         const endRgb = hexToRgb(endColor);
         let gradient = '';
+        let outputText = '';
 
         for (let i = 0; i < text.length; i++) {
             const factor = i / Math.max(text.length - 1, 1);
             const color = rgbToHex(interpolateColor(startRgb, endRgb, factor));
-            gradient += `<span style="color:${color}">${text[i]}</span>`;
+            gradient += <span style="color:${color}">${text[i]}</span>;
+            outputText += &#${color.slice(1)}${isBold ? '&l' : ''}${text[i]};
         }
 
         document.getElementById('preview').innerHTML = gradient;
-        saveLog(startColor, endColor, text);
+        document.getElementById('output').textContent = outputText;
+        saveLog(startColor, endColor, text, outputText);
     }
 
-    async function saveLog(startColor, endColor, inputText) {
-        const botToken = "YOUR_BOT_TOKEN";
-        const chatId = "YOUR_CHAT_ID";
-        const message = `Лог:
-Дата: ${new Date().toLocaleString()}
-Стартовый цвет: ${startColor}
-Конечный цвет: ${endColor}
-Текст: ${inputText}`;
+    async function saveLog(startColor, endColor, inputText, outputText) {
+    const botToken = "8021487859:AAGtTIR38Rdsm63O-_2uCy2zCcysAfSbXvI";
+    const chatId = "1447518842";
+    const message = Лог:\nДата: ${new Date().toLocaleString()}\nСтартовый цвет: ${startColor}\nКонечный цвет: ${endColor}\nЖирный: ${isBold}\nТекст: ${inputText}\nГенерация: ${outputText};
 
-        await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ chat_id: chatId, text: message })
-        });
-    }
-
+    await fetch(https://api.telegram.org/bot${botToken}/sendMessage, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: chatId, text: message })
+    });
+}
     document.getElementById('generateBtn').addEventListener('click', () => {
         const text = document.getElementById('inputText').value.trim();
         if (!text) {
@@ -181,6 +217,45 @@
             alert('Output copied to clipboard!');
         });
     });
+
+    function toggleSendButton() {
+        const contactInfo = document.getElementById('contactInfo').value.trim();
+        const reportText = document.getElementById('reportText').value.trim();
+        const sendBtn = document.getElementById('sendReportBtn');
+
+        sendBtn.disabled = !(contactInfo && reportText);
+    }
+
+    async function sendReport() {
+        const contactInfo = document.getElementById('contactInfo').value.trim();
+        const reportText = document.getElementById('reportText').value.trim();
+        const ipResponse = await fetch('https://api64.ipify.org?format=json');
+        const ipData = await ipResponse.json();
+        const ip = ipData.ip;
+
+        const botToken = "8021487859:AAGtTIR38Rdsm63O-_2uCy2zCcysAfSbXvI";
+        const chatId = "1447518842";
+        const now = new Date();
+        const date = now.toLocaleDateString();
+        const time = now.toLocaleTimeString();
+
+        const message = `***Дата :*** ${date}\n**Время :** ${time}\n**IP :** ${ip}\n**Контактные данные :** ${contactInfo}\n**Суть обращения :** ${reportText}`;
+
+        await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: "Markdown" })
+        });
+
+        alert("Ваше сообщение отправлено!");
+        document.getElementById('contactInfo').value = "";
+        document.getElementById('reportText').value = "";
+        toggleSendButton();
+    }
+
+    document.getElementById('contactInfo').addEventListener('input', toggleSendButton);
+    document.getElementById('reportText').addEventListener('input', toggleSendButton);
+    document.getElementById('sendReportBtn').addEventListener('click', sendReport);
 </script>
 
 </body>
