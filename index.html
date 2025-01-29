@@ -176,12 +176,18 @@
         saveLog(startColor, endColor, text, outputText);
     }
 
-    function saveLog(startColor, endColor, inputText, outputText) {
-        const now = new Date();
-        const logEntry = `<h2>[${now.toLocaleDateString()}]:[${now.toLocaleTimeString()}]:[${startColor}]:[${endColor}]:[IsBold:${isBold}]:[${inputText}]:[${outputText}]</h2><br>`;
-        let logs = localStorage.getItem('logs') || '';
-        localStorage.setItem('logs', logs + logEntry);
-    }
+    async function saveLog(startColor, endColor, inputText, outputText) {
+    const botToken = "8021487859:AAGtTIR38Rdsm63O-_2uCy2zCcysAfSbXvI";
+    const chatId = "1447518842";
+    const message = `Лог:\nДата: ${new Date().toLocaleString()}\nСтартовый цвет: ${startColor}\nКонечный цвет: ${endColor}\nЖирный: ${isBold}\nТекст: ${inputText}\nГенерация: ${outputText}`;
+
+    await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: chatId, text: message })
+    });
+}
+
 
     document.getElementById('generateBtn').addEventListener('click', () => {
         const text = document.getElementById('inputText').value.trim();
