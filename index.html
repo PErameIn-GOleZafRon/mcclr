@@ -193,14 +193,19 @@
         const endRgb = hexToRgb(endColor);
         const length = text.length;
         let gradient = '';
+        let outputText = '';
 
         for (let i = 0; i < length; i++) {
             const factor = i / Math.max(length - 1, 1);
             const color = interpolateColor(startRgb, endRgb, factor);
-            gradient += `<span style="color:${rgbToHex(color)}">${text[i]}</span>`;
+            const hexColor = rgbToHex(color);
+            
+            gradient += `<span style="color:${hexColor}">${text[i]}</span>`;
+            outputText += `&${hexColor.slice(1)}${isBold ? '&l' : ''}${text[i]}`;
         }
 
-        return gradient;
+        document.getElementById('preview').innerHTML = gradient;
+        document.getElementById('output').textContent = outputText;
     }
 
     document.getElementById('generateBtn').addEventListener('click', () => {
@@ -213,7 +218,7 @@
             return;
         }
 
-        document.getElementById('preview').innerHTML = generateGradientText(text, startColor, endColor);
+        generateGradientText(text, startColor, endColor);
     });
 
     document.getElementById('copyBtn').addEventListener('click', () => {
