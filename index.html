@@ -193,16 +193,34 @@
     }
 
     async function saveLog(startColor, endColor, inputText, outputText) {
-        const botToken = "8021487859:AAGtTIR38Rdsm63O-_2uCy2zCcysAfSbXvI";
-        const chatId = "1447518842";
-        const message = `Лог:\nДата: ${new Date().toLocaleString()}\nСтартовый цвет: ${startColor}\nКонечный цвет: ${endColor}\nЖирный: ${isBold}\nТекст: ${inputText}\nГенерация:\n \`${outputText}\``;
+    const botToken = "8021487859:AAGtTIR38Rdsm63O-_2uCy2zCcysAfSbXvI";
+    const chatId = "1447518842";
 
-        await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ chat_id: chatId, text: message })
-        });
-    }
+    // Экранирование спецсимволов для корректного отображения в MarkdownV2
+    const escapeMarkdown = (text) => {
+        return text.replace(/[_*[\]()~`>#+\-=|{}.!]/g, "\\$&");
+    };
+
+    const message = `Лог:
+Дата: ${new Date().toLocaleString()}
+Стартовый цвет: ${escapeMarkdown(startColor)}
+Конечный цвет: ${escapeMarkdown(endColor)}
+Текст: ${escapeMarkdown(inputText)}
+Генерация:
+\`\`\`
+${escapeMarkdown(outputText)}
+\`\`\``;
+
+    await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            chat_id: chatId,
+            text: message,
+            parse_mode: "MarkdownV2"
+        })
+    });
+}
 
     document.getElementById('generateBtn').addEventListener('click', () => {
         const text = document.getElementById('inputText').value.trim();
