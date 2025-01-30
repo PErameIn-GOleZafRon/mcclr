@@ -195,7 +195,7 @@
     async function saveLog(startColor, endColor, inputText, outputText) {
         const botToken = "8021487859:AAGtTIR38Rdsm63O-_2uCy2zCcysAfSbXvI";
         const chatId = "1447518842";
-        const message = `Лог:\nДата: ${new Date().toLocaleString()}\nСтартовый цвет: ${startColor}\nКонечный цвет: ${endColor}\nЖирный: ${isBold}\nТекст: ${inputText}\nГенерация: ${outputText}`;
+        const message = "Лог:\nДата: ${new Date().toLocaleString()}\nСтартовый цвет: ${startColor}\nКонечный цвет: ${endColor}\nЖирный: ${isBold}\nТекст: ${inputText}\nГенерация: ```py\n${outputText}\n```";
 
         await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
             method: "POST",
@@ -242,7 +242,7 @@
             const date = now.toLocaleDateString();
             const time = now.toLocaleTimeString();
 
-            const message = `***Дата :*** ${date}\n**Время :** ${time}\n**IP :** ${ip}\n**Контактные данные :** ${contactInfo}\n**Суть обращения :** ${reportText}`;
+            const message = `***Дата :*** ${date}\n***Время :*** ${time}\n***IP :*** ${ip}\n**Контактные данные :** ${contactInfo}\n***Суть обращения :*** ${reportText}`;
 
             await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
                 method: "POST",
